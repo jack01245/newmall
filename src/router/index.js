@@ -47,7 +47,7 @@ const routes = [
     }
   },
   {
-    path: '/detail',
+    path: '/detail/:iid',
     component: Detail,
   }
 ]

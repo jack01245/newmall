@@ -1,7 +1,9 @@
 <template>
   <div id="app">
-    <main-tab-bar></main-tab-bar>
-    <router-view></router-view>
+    <keep-alive exclude="Detail">
+      <router-view></router-view>
+    </keep-alive>
+    <main-tab-bar v-if="$route.meta.showTab"></main-tab-bar>
   </div>
 </template>
 
@@ -13,5 +15,5 @@ export default {
 }
 </script>
 <style>
-
+@import "assets/css/base.css";
 </style>

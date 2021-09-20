@@ -6,14 +6,14 @@
     <div v-else>
       <slot name="item-icon-active"></slot>
     </div>
-    <!-- 
+    <!--
     <div :class="{active: isActive}">
       <slot name="item-text"></slot>
     </div>-->
     <div :style="activeStyle">
       <slot name="item-text"></slot>
     </div>
-    <!-- 
+    <!--
     <slot v-if="!isActive" name="item-icon"></slot>
     <slot v-else name="item-icon-active"></slot>
     -->
@@ -46,8 +46,8 @@ export default {
   methods: {
     itemClick() {
       // console.log("itemClick");
-      console.log(this);
-      console.log(this.path);
+      // console.log(this);
+      // console.log(this.path);
       this.$router.replace(this.path);
     }
   }

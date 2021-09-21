@@ -30,28 +30,30 @@
 <script>
 //方法
 import {getGoodsData, getHomeDate} from "@/network/home";
-import {debounce} from "@/common/utils";
+// import {debounce} from "@/common/utils";
+import {backTopMixin, itemImgListenerMixin} from "@/network/minxi";
 //公共组件
 import NavBar from "@/components/common/navbar/NavBar";
 import Scroll from "@/components/common/scroll/Scroll";
 //公共业务组件
 import TabControl from "@/components/content/tabControl/TabControl";
 import GoodsList from "@/components/content/goods/GoodsList";
+// import BackTop from "@/components/content/backTop/BackTop";
 //非公共组件
 import HomeSwiper from "./childComps/HomeSwiper";
 import HomeRecommend from "@/views/home/childComps/HomeRecommend";
 import HomeFeature from "@/views/home/childComps/HomeFeature";
-import BackTop from "@/components/content/backTop/BackTop";
 
 
 export default {
   name: "Home",
+  mixins: [itemImgListenerMixin, backTopMixin],
   components: {
-    BackTop,
     NavBar,
     Scroll,
     TabControl,
     GoodsList,
+    // BackTop,//已经混入
     HomeSwiper,
     HomeRecommend,
     HomeFeature,
@@ -66,10 +68,11 @@ export default {
         'sell': {page: 0, list: []},
       },
       goodsListType: 'pop',
-      isBackTop: false,
+      // isBackTop: false,//已经混入
       isTabControl: false,
       isTabOffsetTop: 0,
-      saveY: 0
+      saveY: 0,
+      // itemImgListener: null,//保存监听事件
     }
   },
   computed: {
@@ -86,11 +89,13 @@ export default {
     this.getGoodsData('sell')
   },
   mounted() {
-    const refresh = debounce(this.$refs.scroll.refresh, 100)
-    //6.监听goodsListItem的图片加载
-    this.$bus.$on('goodsImgLoad', () => {
-      refresh()
-    })
+    // 已经被混入了
+    // const refresh = debounce(this.$refs.scroll.refresh, 100)
+    // //6.首页监听goodsListItem的图片加载
+    // this.itemImgListener = () => {
+    //   refresh()
+    // }
+    // this.$bus.$on('goodsImgLoad', this.itemImgListener)
   },
   updated() {
     //7.监听首页轮播图等图片的加载后，保存tabControl的高度
@@ -141,10 +146,10 @@ export default {
       this.$refs.tabControl1.currentIndex = index
       this.$refs.tabControl2.currentIndex = index
     },
-    //4.监听backTop的点击
-    backTopClick() {
-      this.$refs.scroll.scrollTo(0, 0, 100)
-    },
+    //4.监听backTop的点击（混入）
+    // backTopClick() {
+    //   this.$refs.scroll.scrollTo(0, 0, 100)
+    // },
     //5.监听滚动
     contentScroll(position) {
       //4.1判断backTop的出现
@@ -160,11 +165,15 @@ export default {
     }
   },
   activated() {
-    this.$refs.scroll.scrollTo(0, this.saveY, 0)
+    //进入时滚动到离开时保存的位置
+    this.saveY = this.$refs.scroll.scrollTo(0, this.saveY, 0)
     this.$refs.scroll.refresh()
   },
   deactivated() {
+    //离开时保存位置
     this.saveY = this.$refs.scroll.getScrollY()
+    //离开时取消监听首页的goodsImgLoad事件
+    this.$bus.$off('goodsImgLoad', this.itemImgListener)
   }
 }
 </script>

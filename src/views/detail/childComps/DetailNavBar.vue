@@ -42,6 +42,7 @@ export default {
     },
     detailNavClick(index) {
       this.currentIndex = index
+      this.$emit('detailNavClick', index)
     }
   }
 }
